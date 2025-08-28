@@ -28,26 +28,27 @@ const AllProductsPage = () => {
   const [sortBy, setSortBy] = useState<string>('name');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+const API_URL = import.meta.env.VITE_API_URL; // from .env
 
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get('http://localhost:5000/api/products')
-      .then((response) => {
-        const productsWithFallback = response.data.map((product: ProductItem) => ({
-          ...product,
-          image: product.image || '/fallback.jpg',
-        }));
-        setItems(productsWithFallback);
-        setLoading(false);
-        setError(null);
-      })
-      .catch((error) => {
-        console.error('Error fetching products:', error);
-        setError('Failed to load products. Please try again later.');
-        setLoading(false);
-      });
-  }, []);
+useEffect(() => {
+  setLoading(true);
+  axios
+    .get(`${API_URL}/api/products`)
+    .then((response) => {
+      const productsWithFallback = response.data.map((product: ProductItem) => ({
+        ...product,
+        image: product.image || '/fallback.jpg',
+      }));
+      setItems(productsWithFallback);
+      setLoading(false);
+      setError(null);
+    })
+    .catch((error) => {
+      console.error('Error fetching products:', error);
+      setError('Failed to load products. Please try again later.');
+      setLoading(false);
+    });
+}, []);
 
   const categories = ['All', ...Array.from(new Set(items.map((item) => item.category)))];
 
